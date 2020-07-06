@@ -1,6 +1,8 @@
 <template>
-  <div id="app">    
-    <Login />
+  <div id="app"> 
+    <Loding v-if="!loding"/>
+    <Login v-if="loding" />
+    <Content v-if="loding"/>
   </div>
 </template>
 
@@ -9,20 +11,27 @@
 //<img alt="Vue logo" class="U_log_vue01" src="./assets/logo.png">
 
 import Login from '@/components/Login';
-
+import Loding from '@/components/Loding';
+import Content from '@/components/Content';
 
 export default {
   name: 'App',
+  /*
   data: function(){
-    return {
-      user: ''
-    }
+
+  },
+  */
+  computed:{
+      loding(){
+        return this.$store.state.loding;
+      } 
   },
   components: {
-    Login
+    Login,
+    Loding,
+    Content
   },
   created:function(){
-    //axios.get(this.$store.state.api_url_git);
   },
 }
 </script>

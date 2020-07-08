@@ -1,29 +1,67 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from "axios";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-const GIT_API_URL = 'https://api.github.com/users/dogcolley';
+const V1GITAPIURL = 'https://github-contributions-api.now.sh/v1/';
+const V3GITAPIURL = 'https://api.github.com/users/';
 
 export default new Vuex.Store({
   state: {
-    api:{
-        git:GIT_API_URL,
-    },
     git:{
-      UserInfo:{
-        
-      }
+      V1:{},
+      V3:{}
     },
     userId:'',
     loding:false,
+    lodingAction:false,
     login:false,
   },
   mutations: {
     //상태값 변화
+    LOGIN (state,userId){
+      console.log('로그인',userId);
+      state.lodingAction = false;
+      state.loding = false;
+      this.dispatch('V1CONACTION',userId);
+      this.dispatch('V3CONACTION',userId);
+      if(state.git.V1 && state.git.V3){
+        state.userId = userId;
+        setTimeout(() => {
+          state.lodingAction = true;
+          setTimeout(() => {
+            state.loding = true;
+          },1000);
+        }, 2500);
+      }
+    },
+    V1SET (state,data){
+      console.log('가즈아1');
+      state.git.V1 = data;
+    },
+    V3SET (state,data){
+      console.log('가즈아3');
+      state.git.V3 = data;
+    }
   },
   actions: {
     //이벤트
+    async V1CONACTION(STATE,USERID){
+      axios.get(V1GITAPIURL+USERID).then(data=>{
+        console.log(data);
+        this.commit('V1SET',data);
+      }).catch(err=>{
+        console.log(err);
+      });
+    },
+    async V3CONACTION(STATE,USERID){
+      axios.get(V3GITAPIURL+USERID).then(data=>{
+        this.commit('V3SET',data);
+      }).catch(err=>{
+        console.log(err);
+      });
+    }
   },
   modules: {
     //x

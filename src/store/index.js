@@ -17,49 +17,55 @@ export default new Vuex.Store({
     loding:false,
     lodingAction:false,
     login:false,
+    loginTry: false,
   },
   mutations: {
     //상태값 변화
     LOGIN (state,userId){
-      console.log('로그인',userId);
+      //console.log('로그인',userId);
       state.lodingAction = false;
       state.loding = false;
-      this.dispatch('V1CONACTION',userId);
-      this.dispatch('V3CONACTION',userId);
-      if(state.git.V1 && state.git.V3){
-        state.userId = userId;
-        setTimeout(() => {
-          state.lodingAction = true;
-          setTimeout(() => {
-            state.loding = true;
-          },1000);
-        }, 2500);
-      }
+      this.dispatch('LOGINLODING',userId);
     },
     V1SET (state,data){
-      console.log('가즈아1');
       state.git.V1 = data;
     },
     V3SET (state,data){
-      console.log('가즈아3');
       state.git.V3 = data;
     }
   },
   actions: {
     //이벤트
-    async V1CONACTION(STATE,USERID){
-      axios.get(V1GITAPIURL+USERID).then(data=>{
-        console.log(data);
+    async V1CONACTION(state,USERID){
+      await axios.get(V1GITAPIURL+USERID).then(data=>{
+        console.log('V1',data);
         this.commit('V1SET',data);
       }).catch(err=>{
         console.log(err);
       });
     },
-    async V3CONACTION(STATE,USERID){
-      axios.get(V3GITAPIURL+USERID).then(data=>{
+    async V3CONACTION(state,USERID){
+      await axios.get(V3GITAPIURL+USERID).then(data=>{
+        console.log('V3',data);
         this.commit('V3SET',data);
       }).catch(err=>{
         console.log(err);
+      });
+    },
+    async LOGINLODING({dispatch,state},userId){
+      await dispatch('V1CONACTION',userId);
+      await dispatch('V3CONACTION',userId).then(function(){
+
+        try{
+          if(state.git.V3.data.login){
+            state.userId = userId;
+          }
+        }catch{
+          state.loginTry = true;
+        }
+        setTimeout(() => {
+          state.loding = true;
+        },1000);
       });
     }
   },

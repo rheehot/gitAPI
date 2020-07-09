@@ -4,7 +4,7 @@
             <div class="U_loding_log">
                 <img :src="require('@/assets/GitHub-Mark-Light.png')" alt="">      
                 <span class="U_loding_txt T_ds_block U_ft_cfff T_ft_rem14">
-                    Loding
+                    Loading
                     <span class="U_loding_point ">{{point}}</span>
                 </span>          
             </div>

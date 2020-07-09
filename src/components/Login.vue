@@ -35,6 +35,22 @@ export default {
         this.loginInfo = '아이디를 입력해주세요!';
       }
     }
+  },
+  watch:{
+    userName : function(){
+      this.$store.state.loginTry = false;
+      this.loginInfo = '깃허브 계정을 입력해보세요!';
+    }
+  },
+  computed:{
+    /*
+    lodingTryErr(){
+      if(this.$store.state.loginTry)
+        this.loginInfo = '로그인에 실패했습니다!';
+
+      return this.$store.state.loginTry;10
+    }
+    */
   }
 }
 </script>
